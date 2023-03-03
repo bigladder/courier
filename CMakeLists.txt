@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10) # required for gtest_discover_tests
 
-project(atheneum) # Replace
+project(courierr)
 
 # Set a default build type if none was specified
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -35,7 +35,6 @@ endif ()
 
 # Add subdirectories
 add_subdirectory(vendor)
-add_subdirectory(src)
 
 if (${PROJECT_NAME}_BUILD_TESTING)
     add_subdirectory(test)
