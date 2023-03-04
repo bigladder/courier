@@ -23,8 +23,6 @@ if (NOT ${PROJECT_NAME}_STATIC_LIB)
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif ()
 
-add_subdirectory("include/${PROJECT_NAME}")
-
 # Set up testing/coverage
 if (${PROJECT_NAME}_BUILD_TESTING)
     enable_testing()
@@ -35,6 +33,7 @@ if (${PROJECT_NAME}_BUILD_TESTING)
 endif ()
 
 # Add subdirectories
+add_subdirectory("include/${PROJECT_NAME}")
 add_subdirectory(vendor)
 
 if (${PROJECT_NAME}_BUILD_TESTING)
