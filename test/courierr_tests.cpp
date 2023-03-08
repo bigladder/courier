@@ -3,36 +3,38 @@
 
 #include <gtest/gtest.h>
 #include <courierr/courierr.h>
-#include <fmt/format.h>
 
-class TestCourierr : Courierr::CourierrBase {
-  public:
-    virtual void error(const std::string_view message)
-    {
-        std::cerr << fmt::format("[ERROR] {}", message) << std::endl;
-        throw Courierr::CourierrException(message);
-    }
-    virtual void warning(const std::string_view message) { write_message("WARNING", message); }
-    virtual void info(const std::string_view message) { write_message("INFO", message); }
-    virtual void debug(const std::string_view message) { write_message("DEBUG", message); }
-
-  private:
-    void write_message(const std::string_view message_type, const std::string_view message)
-    {
-        std::cout << fmt::format("[{}] {}", message_type, message) << std::endl;
-    }
-};
+#define EXPECT_STDOUT(action, ExpectedOut)                                                         \
+  {                                                                                                \
+    std::stringstream buffer;                                                                      \
+    std::streambuf *sbuf = std::cout.rdbuf();                                                      \
+    std::cout.rdbuf(buffer.rdbuf());                                                               \
+    action std::string capture = buffer.str();                                                     \
+    std::cout.rdbuf(sbuf);                                                                         \
+    EXPECT_STREQ(ExpectedOut.c_str(), buffer.str().c_str());                                       \
+  }
 
 TEST(CourierrBase, Warning)
 {
-    TestCourierr courier;
+    Courierr::SimpleCourierr courier;
     courier.warning("This is a warning.");
 }
 
 TEST(CourierrBase, Error)
 {
-    TestCourierr courier;
-    EXPECT_THROW(courier.error("This is an error!"), Courierr::CourierrException);
+    Courierr::SimpleCourierr courier;
+}
+
+TEST(CourierrException, Error)
+{
+    auto courier = Courierr::SimpleCourierr();
+    std::string expected_output{"[ERROR] This is an error!"};
+    try {
+        throw Courierr::CourierrException("This is an error!", courier);
+        EXPECT_STDOUT(int i = 0;, expected_output);
+    }
+    catch (Courierr::CourierrException &e) {
+    }
 }
 
 int main(int argc, char** argv)
