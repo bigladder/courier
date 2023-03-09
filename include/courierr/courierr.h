@@ -11,9 +11,9 @@
 
 namespace Courierr {
 
-class CourierrBase {
+class Courierr {
   public:
-    virtual ~CourierrBase() = default;
+    virtual ~Courierr() = default;
 
     virtual void error(const std::string_view message) = 0;
     virtual void warning(const std::string_view message) = 0;
@@ -26,7 +26,7 @@ class CourierrBase {
     void* message_context {nullptr};
 };
 
-class SimpleCourierr : public Courierr::CourierrBase {
+class SimpleCourierr : public Courierr::Courierr {
   public:
     void error(const std::string_view message) override { write_message("ERROR", message); }
     void warning(const std::string_view message) override { write_message("WARNING", message); }
@@ -42,19 +42,19 @@ class SimpleCourierr : public Courierr::CourierrBase {
 
 class CourierrException : public std::exception {
   public:
-    explicit CourierrException(const char* message_, CourierrBase& logger)
+    explicit CourierrException(const char* message_, Courierr& logger)
      : message(message_)
      , courierr(logger)
     {
       write_error();
     }
-    explicit CourierrException(const std::string& message_, CourierrBase& logger)
+    explicit CourierrException(const std::string& message_, Courierr& logger)
      : message(message_)
      , courierr(logger)
     {
       write_error();
     }
-    explicit CourierrException(const std::string_view message_, CourierrBase& logger)
+    explicit CourierrException(const std::string_view message_, Courierr& logger)
      : message(message_)
      , courierr(logger)
     {
@@ -68,7 +68,7 @@ class CourierrException : public std::exception {
     std::string message;
 
   private:
-    CourierrBase& courierr;
+    Courierr& courierr;
     void write_error() { courierr.error(message); } 
 };
 

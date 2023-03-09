@@ -14,13 +14,13 @@
     EXPECT_STREQ(ExpectedOut.c_str(), buffer.str().c_str());                                       \
   }
 
-TEST(CourierrBase, Warning)
+TEST(Courierr, Warning)
 {
     Courierr::SimpleCourierr courier;
     courier.warning("This is a warning.");
 }
 
-TEST(CourierrBase, Error)
+TEST(Courierr, Error)
 {
     Courierr::SimpleCourierr courier;
 }
