@@ -26,7 +26,7 @@ class Courierr {
     void* message_context {nullptr};
 };
 
-class SimpleCourierr : public Courierr::Courierr {
+class SimpleCourierr : public Courierr {
   public:
     void error(const std::string_view message) override { write_message("ERROR", message); }
     void warning(const std::string_view message) override { write_message("WARNING", message); }

@@ -33,7 +33,7 @@ TEST(CourierrException, Error)
         throw Courierr::CourierrException("This is an error!", courier);
         EXPECT_STDOUT(int i = 0;, expected_output);
     }
-    catch (Courierr::CourierrException &e) {
+    catch (Courierr::CourierrException &) {
     }
 }
 
