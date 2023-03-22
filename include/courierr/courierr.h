@@ -6,6 +6,7 @@
 #include <functional>
 #include <string_view>
 #include <string>
+#include <iostream>
 
 #include <fmt/format.h>
 
