@@ -21,7 +21,7 @@ class Courierr {
     virtual void info(const std::string_view message) = 0;
     virtual void debug(const std::string_view message) = 0;
 
-    void set_message_context(void* message_context) { this->message_context = message_context; };
+    void set_message_context(void* message_context_in) { message_context = message_context_in; };
 
   protected:
     void* message_context {nullptr};
