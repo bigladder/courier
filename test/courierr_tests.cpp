@@ -2,38 +2,53 @@
  * See the LICENSE file for additional terms and conditions. */
 
 #include <gtest/gtest.h>
-#include <courierr/courierr.h>
+#include "client.h"
 
 #define EXPECT_STDOUT(action, ExpectedOut)                                                         \
-  {                                                                                                \
-    std::stringstream buffer;                                                                      \
-    std::streambuf *sbuf = std::cout.rdbuf();                                                      \
-    std::cout.rdbuf(buffer.rdbuf());                                                               \
-    action std::string capture = buffer.str();                                                     \
-    std::cout.rdbuf(sbuf);                                                                         \
-    EXPECT_STREQ(ExpectedOut.c_str(), buffer.str().c_str());                                       \
-  }
+    {                                                                                              \
+        std::stringstream buffer;                                                                  \
+        std::streambuf* sbuf = std::cout.rdbuf();                                                  \
+        std::cout.rdbuf(buffer.rdbuf());                                                           \
+        action std::string capture = buffer.str();                                                 \
+        std::cout.rdbuf(sbuf);                                                                     \
+        EXPECT_STREQ(ExpectedOut.c_str(), buffer.str().c_str());                                   \
+    }
 
 TEST(Courierr, Warning)
 {
-    Courierr::SimpleCourierr courier;
-    courier.warning("This is a warning.");
+    ClientClass client_object("My object");
+    std::string expected_output {"[WARNING] ClientClass(My object) LibraryClass(My library "
+                                 "object): Something unexpected happened\n"};
+    EXPECT_STDOUT(client_object.make_library_warning();, expected_output)
 }
 
 TEST(Courierr, Error)
 {
-    Courierr::SimpleCourierr courier;
+    ClientClass client_object("My object");
+    std::string expected_output {"[ERROR] ClientClass(My object) LibraryClass(My library object): "
+                                 "Something serious happened\n"};
+    EXPECT_STDOUT(EXPECT_THROW(client_object.make_library_error(), std::runtime_error);
+                  , expected_output)
 }
 
-TEST(CourierrException, Error)
+TEST(Courierr, Minimal)
 {
-    auto courier = Courierr::SimpleCourierr();
-    std::string expected_output{"[ERROR] This is an error!"};
+    class MinimalCourier : public Courierr::Courierr {
+        void error_override(const std::string& message) override {}
+        void warning_override(const std::string& message) override {}
+        void info_override(const std::string& message) override {}
+        void debug_override(const std::string& message) override {}
+    };
+
+    ClientClass client_object("My object");
+    client_object.library_object.set_courier(std::make_shared<MinimalCourier>());
     try {
-        throw Courierr::CourierrException("This is an error!", courier);
-        EXPECT_STDOUT(int i = 0;, expected_output);
+        client_object.make_library_error();
     }
-    catch (Courierr::CourierrException &) {
+    catch (std::runtime_error& exception) {
+        EXPECT_STREQ(exception.what(),
+                     "Courierr: Error not handled by derived class: \"LibraryClass(My library "
+                     "object): Something serious happened\"");
     }
 }
 

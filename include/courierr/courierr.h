@@ -3,12 +3,8 @@
 
 #pragma once
 
-#include <functional>
-#include <string_view>
 #include <string>
 #include <iostream>
-
-#include <fmt/format.h>
 
 namespace Courierr {
 
@@ -16,57 +12,23 @@ class Courierr {
   public:
     virtual ~Courierr() = default;
 
-    virtual void error(const std::string_view message) = 0;
-    virtual void warning(const std::string_view message) = 0;
-    virtual void info(const std::string_view message) = 0;
-    virtual void debug(const std::string_view message) = 0;
-
-    void set_message_context(void* message_context_in) { message_context = message_context_in; };
-
-  protected:
-    void* message_context {nullptr};
-};
-
-class SimpleCourierr : public Courierr {
-  public:
-    void error(const std::string_view message) override { write_message("ERROR", message); }
-    void warning(const std::string_view message) override { write_message("WARNING", message); }
-    void info(const std::string_view message) override { write_message("INFO", message); }
-    void debug(const std::string_view message) override { write_message("DEBUG", message); }
+    // Methods to be used in library source code
+    virtual void error(const std::string& message) final
+    {
+        error_override(message);
+        throw std::runtime_error("Courierr: Error not handled by derived class: \"" + message +
+                                 "\"");
+    }
+    virtual void warning(const std::string& message) final { warning_override(message); }
+    virtual void info(const std::string& message) final { info_override(message); }
+    virtual void debug(const std::string& message) final { debug_override(message); }
 
   private:
-    void write_message(const std::string_view message_type, const std::string_view message)
-    {
-        std::cout << fmt::format("[{}] {}", message_type, message) << std::endl;
-    }
-};
-
-class CourierrException : public std::exception {
-  public:
-    explicit CourierrException(const char* message, Courierr& courierr)
-     : message(message)
-    {
-      write_error(courierr);
-    }
-    explicit CourierrException(const std::string& message, Courierr& courierr)
-     : message(message)
-    {
-      write_error(courierr);
-    }
-    explicit CourierrException(const std::string_view message, Courierr& courierr)
-     : message(message)
-    {
-      write_error(courierr);
-    }
-
-    virtual ~CourierrException() noexcept = default;
-    virtual const char* what() const noexcept { return message.c_str(); }
-
-  protected:
-    std::string message;
-
-  private:
-    void write_error(Courierr& courierr) { courierr.error(message); }
+    // Virtual methods to be overridden by derived class
+    virtual void error_override(const std::string& message) = 0;
+    virtual void warning_override(const std::string& message) = 0;
+    virtual void info_override(const std::string& message) = 0;
+    virtual void debug_override(const std::string& message) = 0;
 };
 
 } // namespace Courierr
