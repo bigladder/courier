@@ -14,6 +14,8 @@ class ClientClass {
 class SimpleBaseCourier : public Courierr::Courierr {
   public:
     explicit SimpleBaseCourier() = default;
+
+  protected:
     void error_override(const std::string& message) override
     {
         write_message("ERROR", message);
@@ -25,8 +27,6 @@ class SimpleBaseCourier : public Courierr::Courierr {
     }
     void info_override(const std::string& message) override { write_message("INFO", message); }
     void debug_override(const std::string& message) override { write_message("DEBUG", message); }
-
-  protected:
     virtual void write_message(const std::string& message_type, const std::string& message) = 0;
 };
 
@@ -37,7 +37,7 @@ class ClientCourier : public SimpleBaseCourier {
     {
     }
 
-  private:
+  protected:
     ClientClass* client_class_pointer;
     void write_message(const std::string& message_type, const std::string& message) override
     {

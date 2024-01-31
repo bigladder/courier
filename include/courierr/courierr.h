@@ -13,7 +13,7 @@ class Courierr {
     virtual ~Courierr() = default;
 
     // Methods to be used in library source code
-    virtual void error(const std::string& message) final
+    [[noreturn]] virtual void error(const std::string& message) final
     {
         error_override(message);
         throw std::runtime_error("Courierr: Error not handled by derived class: \"" + message +
@@ -23,9 +23,9 @@ class Courierr {
     virtual void info(const std::string& message) final { info_override(message); }
     virtual void debug(const std::string& message) final { debug_override(message); }
 
-  private:
+  protected:
     // Virtual methods to be overridden by derived class
-    virtual void error_override(const std::string& message) = 0;
+    [[noreturn]] virtual void error_override(const std::string& message) = 0;
     virtual void warning_override(const std::string& message) = 0;
     virtual void info_override(const std::string& message) = 0;
     virtual void debug_override(const std::string& message) = 0;
