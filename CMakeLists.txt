@@ -15,8 +15,9 @@ find_package(Git QUIET)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-option(${PROJECT_NAME}_BUILD_TESTING "Build ${PROJECT_NAME} testing targets" OFF)
-option(${PROJECT_NAME}_COVERAGE "Generate ${PROJECT_NAME} coverage reports" OFF)
+include(CMakeDependentOption)
+cmake_dependent_option(${PROJECT_NAME}_BUILD_TESTING "Build ${PROJECT_NAME} testing targets" ON "${PROJECT_NAME}_IS_TOP_LEVEL" OFF)
+option(${PROJECT_NAME}_COVERAGE "Add ${PROJECT_NAME} coverage reports" OFF)
 option(${PROJECT_NAME}_STATIC_LIB "Make ${PROJECT_NAME} a static library" ON)
 
 if (NOT ${PROJECT_NAME}_STATIC_LIB)
