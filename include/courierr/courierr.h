@@ -12,23 +12,23 @@ class Courierr {
   public:
     virtual ~Courierr() = default;
 
-    // Methods to be used in library source code
-    [[noreturn]] virtual void error(const std::string& message) final
+    // Sending methods to be used in library source code
+    [[noreturn]] virtual void send_error(const std::string& message) final
     {
-        error_override(message);
+        receive_error(message);
         throw std::runtime_error("Courierr: Error not handled by derived class: \"" + message +
                                  "\"");
     }
-    virtual void warning(const std::string& message) final { warning_override(message); }
-    virtual void info(const std::string& message) final { info_override(message); }
-    virtual void debug(const std::string& message) final { debug_override(message); }
+    virtual void send_warning(const std::string& message) final { receive_warning(message); }
+    virtual void send_info(const std::string& message) final { receive_info(message); }
+    virtual void send_debug(const std::string& message) final { receive_debug(message); }
 
   protected:
-    // Virtual methods to be overridden by derived class
-    [[noreturn]] virtual void error_override(const std::string& message) = 0;
-    virtual void warning_override(const std::string& message) = 0;
-    virtual void info_override(const std::string& message) = 0;
-    virtual void debug_override(const std::string& message) = 0;
+    // Virtual receiving methods to be overridden by derived class
+    [[noreturn]] virtual void receive_error(const std::string& message) = 0;
+    virtual void receive_warning(const std::string& message) = 0;
+    virtual void receive_info(const std::string& message) = 0;
+    virtual void receive_debug(const std::string& message) = 0;
 };
 
 } // namespace Courierr

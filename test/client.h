@@ -4,42 +4,47 @@
 
 class ClientClass {
   public:
-    ClientClass(std::string name_in);
+    explicit ClientClass(std::string name_in);
     std::string name;
     LibraryClass library_object;
-    void make_library_warning() { library_object.method_with_warning(); }
-    void make_library_error() { library_object.method_with_error(); }
 };
 
-class SimpleBaseCourier : public Courierr::Courierr {
-  public:
-    explicit SimpleBaseCourier() = default;
-
-  protected:
-    void error_override(const std::string& message) override
-    {
-        write_message("ERROR", message);
-        throw std::runtime_error(message);
-    }
-    void warning_override(const std::string& message) override
-    {
-        write_message("WARNING", message);
-    }
-    void info_override(const std::string& message) override { write_message("INFO", message); }
-    void debug_override(const std::string& message) override { write_message("DEBUG", message); }
-    virtual void write_message(const std::string& message_type, const std::string& message) = 0;
-};
-
-class ClientCourier : public SimpleBaseCourier {
+class ClientCourier : public Courierr::Courierr {
   public:
     explicit ClientCourier(ClientClass* client_class_pointer_in)
         : client_class_pointer(client_class_pointer_in)
     {
     }
+    enum class MessageLevel { all, debug, info, warning, error };
+    MessageLevel message_level {MessageLevel::info};
 
   protected:
     ClientClass* client_class_pointer;
-    void write_message(const std::string& message_type, const std::string& message) override
+
+    void receive_error(const std::string& message) override
+    {
+        write_message("ERROR", message);
+        throw std::runtime_error(message);
+    }
+    void receive_warning(const std::string& message) override
+    {
+        if (message_level <= MessageLevel::warning) {
+            write_message("WARNING", message);
+        }
+    }
+    void receive_info(const std::string& message) override
+    {
+        if (message_level <= MessageLevel::info) {
+            write_message("INFO", message);
+        }
+    }
+    void receive_debug(const std::string& message) override
+    {
+        if (message_level <= MessageLevel::debug) {
+            write_message("DEBUG", message);
+        }
+    }
+    void write_message(const std::string& message_type, const std::string& message)
     {
         std::string context_format =
             client_class_pointer ? fmt::format(" ClientClass({})", client_class_pointer->name) : "";
@@ -48,6 +53,7 @@ class ClientCourier : public SimpleBaseCourier {
 };
 
 ClientClass::ClientClass(std::string name_in)
-    : name(name_in), library_object("My library object", std::make_shared<ClientCourier>(this))
+    : name(std::move(name_in))
+    , library_object("My library object", std::make_shared<ClientCourier>(this))
 {
 }

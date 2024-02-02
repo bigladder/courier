@@ -28,7 +28,7 @@ on [Python Logging Levels](https://docs.python.org/3/library/logging.html#loggin
 Courierr has two audiences:
 
 1. Library developers that want to give their clients flexibility in message logging and error handling, and
-2. Clients adopting the libraries developed by #1
+2. Clients adopting such libraries
 
 ### Library Developers
 
@@ -39,48 +39,104 @@ public class in a library where an error (or other loggable event) might occur.
 #include <courierr/courierr.h>
 
 class LibraryClass {
-    public:
-        LibraryClass(const int my_number_in, const std::string name_in, const std::shared_ptr<Courierr::Courierr>& courier_in) : 
-            my_number(my_number_in), name(std::move(name_in)), 
-    private:
-        std::string name;
-        int my_number;
-        std::shared_ptr<Courierr::Courierr> courier;
+  public:
+    LibraryClass(std::string name_in, const std::shared_ptr<Courierr::Courierr>& courier_in)
+        : name(std::move(name_in)), courier(courier_in) {}
+  private:
+    std::string name;
+    std::shared_ptr<Courierr::Courierr> courier;
 };
 ```
 
 The `Courierr` base class defines an interface with a public methods for each of the four message levels:
 
-- `debug(const std::string& message)`
-- `info(const std::string& message)`
-- `warning(const std::string& message)`
-- `error(const std::string& message)`
+- `send_debug(const std::string& message)`
+- `send_info(const std::string& message)`
+- `send_warning(const std::string& message)`
+- `send_error(const std::string& message)`
 
-These methods should be called from the code within the library class.
+These methods are called from within the library class. For example:
 
 ```c++
-courier->error("Something terrible happened.");
+if (problem_exists)
+{
+    courier->send_error("Something terrible happened.");
+}
 ```
 
 #### Good Practices
 
-- The parent class should provide access to set and get the `Courierr` pointer.
-- By making shared pointers and providing access, multiple closely-related objects can share a single `Courierr`
-  instance.
+The following examples illustrate ways to use `Courierr` most effectively as a library developer. These practices are
+also implemented in [test/library.h](test/library.h).
+
+1. The parent class should provide access to set and get the `Courierr` pointer:
+
+    ```c++
+    void set_courier(std::shared_ptr<Courierr::Courierr> courier_in) 
+    {
+        courier = std::move(courier_in);
+    }
+    std::shared_ptr<Courierr::Courierr> get_courier() { return courier; }
+
+   ```
+
+2. By making `Courierr` shared pointers and providing access, multiple closely-related objects can share a
+   single `Courierr` instance.
+
+3. Consider defining default derived `Courierr`. Some library users will not care how messages are handled, and don't
+   want the additional hassle of developing a derived `Courierr` class.
 
 ### Library Adopters
 
-Adopters must derive a class from `Courierr::Courierr`. The Courierr base class establishes four virtual functions:
+Adopters must derive a class from `Courierr::Courierr`. The Courierr base class establishes four virtual functions for
+receiving events:
 
-- `debug_override(const std::string& message)`
-- `info_override(const std::string& message)`
-- `warning_override(const std::string& message)`
-- `error_override(const std::string& message)`
+- `receive_debug(const std::string& message)`
+- `receive_info(const std::string& message)`
+- `receive_warning(const std::string& message)`
+- `receive_error(const std::string& message)`
 
-#### Derived Class Recommendations
+#### Good Practices
 
-##### Common Message Format
+Consider the following patterns for your derived class(s). These practices are also implemented
+in [test/client.h](test/client.h).
 
-##### Adding client context to messages
+1. Create a function to route all messages into a consistent format.
 
-##### Add a log level
+    ```c++
+    virtual void make_message(const std::string& message_type, const std::string& message) = 0;
+    void receive_error(const std::string& message) override
+    {
+        make_message("ERROR", message);
+        throw std::runtime_error(message);
+    }
+    void receive_warning(const std::string& message) override { make_message("WARNING", message); }
+    void receive_info(const std::string& message) override { make_message("INFO", message); }
+    void receive_debug(const std::string& message) override { make_message("DEBUG", message); }
+    ```
+
+2. Add your context to your received messages:
+
+    ```c++
+    protected:
+       ClientClass* client_class_pointer;
+       void make_message(const std::string& message_type, const std::string& message) override
+       {
+           std::string context_format =
+               client_class_pointer ? fmt::format(" ClientClass({})", client_class_pointer->name) : "";
+           std::cout << fmt::format("[{}]{} {}", message_type, context_format, message) << std::endl;
+       }
+   ```
+
+3. Add a message level data member to temporarily silence events below a certain message level.
+
+    ```c++
+    enum class MessageLevel { all, debug, info, warning, error };
+    MessageLevel message_level {MessageLevel::info};
+    void receive_warning(const std::string& message) override
+    {
+        if (message_level <= MessageLevel::warning) {
+            write_message("WARNING", message);
+        }
+    }
+    ```
