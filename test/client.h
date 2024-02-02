@@ -9,7 +9,7 @@ class ClientClass {
     LibraryClass library_object;
 };
 
-class ClientCourier : public Courierr::Courierr {
+class ClientCourier : public Courier::Courier {
   public:
     explicit ClientCourier(ClientClass* client_class_pointer_in)
         : client_class_pointer(client_class_pointer_in)

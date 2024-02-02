@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10) # required for gtest_discover_tests
 
-project(courierr)
+project(courier)
 
 # Set a default build type if none was specified
 if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)

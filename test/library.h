@@ -2,10 +2,10 @@
 
 #include <string>
 #include <utility>
-#include <courierr/courierr.h>
+#include <courier/courier.h>
 #include <fmt/format.h>
 
-class LibraryDefaultCourier : public Courierr::Courierr {
+class LibraryDefaultCourier : public Courier::Courier {
     void receive_error(const std::string& message) override { write_message("ERROR", message); }
     void receive_warning(const std::string& message) override { write_message("WARNING", message); }
     void receive_info(const std::string& message) override { write_message("INFO", message); }
@@ -22,7 +22,7 @@ class LibraryDefaultCourier : public Courierr::Courierr {
 class LibraryClass {
   public:
     LibraryClass(std::string name_in,
-                 const std::shared_ptr<Courierr::Courierr>& courier_in =
+                 const std::shared_ptr<Courier::Courier>& courier_in =
                      std::make_shared<LibraryDefaultCourier>())
         : name(std::move(name_in)), courier(courier_in)
     {
@@ -40,15 +40,15 @@ class LibraryClass {
         courier->send_warning(make_message("Something unexpected happened"));
     }
     void generate_error() { courier->send_error(make_message("Something serious happened")); }
-    void set_courier(std::shared_ptr<Courierr::Courierr> courier_in)
+    void set_courier(std::shared_ptr<Courier::Courier> courier_in)
     {
         courier = std::move(courier_in);
     }
-    std::shared_ptr<Courierr::Courierr> get_courier() { return courier; }
+    std::shared_ptr<Courier::Courier> get_courier() { return courier; }
 
   private:
     std::string name;
-    std::shared_ptr<Courierr::Courierr> courier;
+    std::shared_ptr<Courier::Courier> courier;
     static constexpr std::string_view message_format {"LibraryClass({}): {}"};
     std::string make_message(const std::string& message)
     {

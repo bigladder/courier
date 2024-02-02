@@ -6,17 +6,17 @@
 #include <string>
 #include <iostream>
 
-namespace Courierr {
+namespace Courier {
 
-class Courierr {
+class Courier {
   public:
-    virtual ~Courierr() = default;
+    virtual ~Courier() = default;
 
     // Sending methods to be used in library source code
     [[noreturn]] virtual void send_error(const std::string& message) final
     {
         receive_error(message);
-        throw std::runtime_error("Courierr: Error not handled by derived class: \"" + message +
+        throw std::runtime_error("Courier: Error not handled by derived class: \"" + message +
                                  "\"");
     }
     virtual void send_warning(const std::string& message) final { receive_warning(message); }
@@ -31,4 +31,4 @@ class Courierr {
     virtual void receive_debug(const std::string& message) = 0;
 };
 
-} // namespace Courierr
+} // namespace Courier
