@@ -19,8 +19,6 @@ class ClientCourier : public Courier::Courier {
     MessageLevel message_level {MessageLevel::info};
 
   protected:
-    ClientClass* client_class_pointer;
-
     void receive_error(const std::string& message) override
     {
         write_message("ERROR", message);
@@ -44,11 +42,15 @@ class ClientCourier : public Courier::Courier {
             write_message("DEBUG", message);
         }
     }
+
+    ClientClass* client_class_pointer;
+    constexpr static std::string_view context_format {" ClientClass '{}':"};
+
     void write_message(const std::string& message_type, const std::string& message)
     {
-        std::string context_format =
-            client_class_pointer ? fmt::format(" ClientClass({})", client_class_pointer->name) : "";
-        std::cout << fmt::format("[{}]{} {}", message_type, context_format, message) << std::endl;
+        std::string context =
+            client_class_pointer ? fmt::format(context_format, client_class_pointer->name) : "";
+        std::cout << fmt::format("[{}]{} {}", message_type, context, message) << std::endl;
     }
 };
 

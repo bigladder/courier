@@ -29,17 +29,17 @@ class LibraryClass {
     }
     void generate_debug()
     {
-        courier->send_debug(make_message("Something for the developer happened"));
+        courier->send_debug(make_message("Something for the developer happened."));
     }
     void generate_info()
     {
-        courier->send_info(make_message("Something you should notice happened"));
+        courier->send_info(make_message("Something you should notice happened."));
     }
     void generate_warning()
     {
-        courier->send_warning(make_message("Something unexpected happened"));
+        courier->send_warning(make_message("Something unexpected happened."));
     }
-    void generate_error() { courier->send_error(make_message("Something serious happened")); }
+    void generate_error() { courier->send_error(make_message("Something serious happened.")); }
     void set_courier(std::shared_ptr<Courier::Courier> courier_in)
     {
         courier = std::move(courier_in);
@@ -49,7 +49,7 @@ class LibraryClass {
   private:
     std::string name;
     std::shared_ptr<Courier::Courier> courier;
-    static constexpr std::string_view message_format {"LibraryClass({}): {}"};
+    static constexpr std::string_view message_format {"LibraryClass '{}': {}"};
     std::string make_message(const std::string& message)
     {
         return fmt::format(message_format, name, message);

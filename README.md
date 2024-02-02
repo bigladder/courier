@@ -123,7 +123,7 @@ in [test/client.h](test/client.h).
        void make_message(const std::string& message_type, const std::string& message) override
        {
            std::string context_format =
-               client_class_pointer ? fmt::format(" ClientClass({})", client_class_pointer->name) : "";
+               client_class_pointer ? fmt::format(" ClientClass '{}':", client_class_pointer->name) : "";
            std::cout << fmt::format("[{}]{} {}", message_type, context_format, message) << std::endl;
        }
    ```

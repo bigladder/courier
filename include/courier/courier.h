@@ -16,8 +16,7 @@ class Courier {
     [[noreturn]] virtual void send_error(const std::string& message) final
     {
         receive_error(message);
-        throw std::runtime_error("Courier: Error not handled by derived class: \"" + message +
-                                 "\"");
+        throw std::runtime_error("Courier error not handled by derived class: " + message);
     }
     virtual void send_warning(const std::string& message) final { receive_warning(message); }
     virtual void send_info(const std::string& message) final { receive_info(message); }
