@@ -10,7 +10,11 @@
 namespace Courier {
 
 class DefaultCourier : public Courier {
-    void receive_error(const std::string& message) override { write_message("ERROR", message); }
+    void receive_error(const std::string& message) override
+    {
+        write_message("ERROR", message);
+        throw std::runtime_error(message);
+    }
     void receive_warning(const std::string& message) override { write_message("WARNING", message); }
     void receive_info(const std::string& message) override { write_message("INFO", message); }
     void receive_debug(const std::string& message) override { write_message("DEBUG", message); }
@@ -25,6 +29,7 @@ class DefaultCourier : public Courier {
 
 class Dispatcher {
   public:
+    Dispatcher() = default;
     explicit Dispatcher(
         std::string name_in,
         const std::shared_ptr<Courier>& courier_in = std::make_shared<DefaultCourier>())
