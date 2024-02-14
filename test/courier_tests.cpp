@@ -84,7 +84,7 @@ TEST(Courier, Default)
     LibraryClass new_library_object("My library object");
     std::string expected_output {
         "[DEBUG] LibraryClass 'My library object': Something for the developer happened.\n  "
-        "Generated using LibraryDefaultCourier. Consider deriving your own Courier class!\n"};
+        "Generated using Courier::DefaultCourier. Consider deriving your own Courier class!\n"};
     EXPECT_STDOUT(new_library_object.generate_debug();, expected_output)
 }
 
