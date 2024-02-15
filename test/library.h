@@ -6,12 +6,12 @@
 #include <courier/helpers.h>
 #include <fmt/format.h>
 
-class LibraryClass : Courier::Dispatcher {
+class LibraryClass : Courier::Sender {
   public:
     explicit LibraryClass(std::string name_in,
                           const std::shared_ptr<Courier::Courier>& courier_in =
                               std::make_shared<Courier::DefaultCourier>())
-        : Courier::Dispatcher(std::move(name_in), courier_in)
+        : Courier::Sender(std::move(name_in), courier_in)
     {
         class_name = "LibraryClass";
     }

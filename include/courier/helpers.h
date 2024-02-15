@@ -27,18 +27,17 @@ class DefaultCourier : public Courier {
     }
 };
 
-class Dispatcher {
+class Sender {
   public:
-    Dispatcher() = default;
-    explicit Dispatcher(
-        std::string name_in,
-        const std::shared_ptr<Courier>& courier_in = std::make_shared<DefaultCourier>())
+    Sender() = default;
+    explicit Sender(std::string name_in,
+                    const std::shared_ptr<Courier>& courier_in = std::make_shared<DefaultCourier>())
         : name(std::move(name_in)), courier(courier_in) {};
     std::string name;
 
   protected:
     std::shared_ptr<Courier> courier;
-    Dispatcher* parent_pointer {nullptr};
+    Sender* parent_pointer {nullptr};
     std::string class_name;
     std::string message_format {"{} '{}': {}"};
     [[nodiscard]] std::string make_message(const std::string& message) const // NOLINT
