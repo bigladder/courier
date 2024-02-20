@@ -8,7 +8,7 @@ A lightweight, header-only C++ library for use in other libraries that allows cl
 Courier itself is NOT a logger or an error handler. It simply provides a mechanism for clients to decide how to log and
 handle errors encountered in a library.
 
-## Error Levels
+## Message Levels
 
 Courier defines four message levels (based
 on [Python Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels)):
@@ -77,14 +77,17 @@ also implemented in [test/library.h](test/library.h).
         courier = std::move(courier_in);
     }
     std::shared_ptr<Courier::Courier> get_courier() { return courier; }
-
    ```
+
+   [helpers.h](include/courier/helpers.h) provides a `Sender` interface class that includes this functionality among
+   other good practices, that can serve as a base class for your library classes.
 
 2. By making `Courier` shared pointers and providing access, multiple closely-related objects can share a
    single `Courier` instance.
 
 3. Consider defining default derived `Courier`. Some library users will not care how messages are handled, and don't
-   want the additional hassle of developing a derived `Courier` class.
+   want the additional hassle of developing a derived `Courier` class. An example default `Courier` is provided
+   in [helpers.h](include/courier/helpers.h).
 
 ### Library Adopters
 
