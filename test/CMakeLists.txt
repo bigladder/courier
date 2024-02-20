@@ -1,4 +1,4 @@
-set(test_sources ${PROJECT_NAME}_tests.cpp)
+set(test_sources ${PROJECT_NAME}_tests.cpp library.h client.h)
 
 add_executable(${PROJECT_NAME}_tests ${test_sources})
 
