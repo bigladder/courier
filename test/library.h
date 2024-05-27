@@ -11,9 +11,8 @@ class LibraryClass : Courier::Sender {
     explicit LibraryClass(std::string name_in,
                           const std::shared_ptr<Courier::Courier>& courier_in =
                               std::make_shared<Courier::DefaultCourier>())
-        : Courier::Sender(std::move(name_in), courier_in)
+        : Courier::Sender("LibraryClass", std::move(name_in), courier_in)
     {
-        class_name = "LibraryClass";
     }
     void generate_debug() { send_debug("Something for the developer happened."); }
     void generate_info() { send_info("Something you should notice happened."); }

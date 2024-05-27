@@ -30,9 +30,10 @@ class DefaultCourier : public Courier {
 class Sender {
   public:
     Sender() = default;
-    explicit Sender(std::string name_in,
+    explicit Sender(std::string class_name_in,
+                    std::string name_in,
                     const std::shared_ptr<Courier>& courier_in = std::make_shared<DefaultCourier>())
-        : name(std::move(name_in)), courier(courier_in) {};
+        : name(std::move(name_in)), courier(courier_in), class_name(std::move(class_name_in)) {};
     std::string name;
 
   protected:
@@ -61,6 +62,8 @@ class Sender {
     {
         courier->send_debug(make_message(message));
     }
+    void set_courier(const std::shared_ptr<Courier>& courier_in) { courier = courier_in; }
+    std::shared_ptr<Courier> get_courier() { return courier; };
 };
 
 } // namespace Courier
