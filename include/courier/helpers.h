@@ -35,6 +35,9 @@ class Sender {
                     const std::shared_ptr<Courier>& courier_in = std::make_shared<DefaultCourier>())
         : name(std::move(name_in)), courier(courier_in), class_name(std::move(class_name_in)) {};
     std::string name;
+    void set_courier(const std::shared_ptr<Courier>& courier_in) { courier = courier_in; }
+    std::shared_ptr<Courier> get_courier() { return courier; }
+    void set_parent_pointer(Sender* parent_pointer_in) { parent_pointer = parent_pointer_in; }
 
   protected:
     std::shared_ptr<Courier> courier;
@@ -62,8 +65,6 @@ class Sender {
     {
         courier->send_debug(make_message(message));
     }
-    void set_courier(const std::shared_ptr<Courier>& courier_in) { courier = courier_in; }
-    std::shared_ptr<Courier> get_courier() { return courier; };
 };
 
 } // namespace Courier
