@@ -4,7 +4,6 @@
 #include <utility>
 #include <courier/courier.h>
 #include <courier/helpers.h>
-#include <fmt/format.h>
 
 class LibraryClass : Courier::Sender {
   public:

@@ -49,8 +49,8 @@ class ClientCourier : public Courier::Courier {
     void write_message(const std::string& message_type, const std::string& message)
     {
         std::string context =
-            client_class_pointer ? fmt::format(context_format, client_class_pointer->name) : "";
-        std::cout << fmt::format("[{}]{} {}", message_type, context, message) << std::endl;
+            client_class_pointer ? std::format(context_format, client_class_pointer->name) : "";
+        std::cout << std::format("[{}]{} {}", message_type, context, message) << std::endl;
     }
 };
 

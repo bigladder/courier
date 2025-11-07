@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <fmt/format.h>
+#include <format>
 
 #include "courier.h"
 
@@ -20,7 +20,7 @@ class DefaultCourier : public Courier {
     void receive_debug(const std::string& message) override { write_message("DEBUG", message); }
     virtual void write_message(const std::string& message_type, const std::string& message)
     {
-        std::cout << fmt::format("[{}] {}", message_type, message) << std::endl;
+        std::cout << std::format("[{}] {}", message_type, message) << std::endl;
         std::cout << "  Generated using Courier::DefaultCourier. Consider deriving your own "
                      "Courier class!"
                   << std::endl;
@@ -42,7 +42,7 @@ class Sender {
     std::string message_format {"{} '{}': {}"};
     [[nodiscard]] std::string make_message(const std::string& message) const // NOLINT
     {
-        std::string local_message = fmt::format(message_format, class_name, name, message);
+        std::string local_message = std::format(message_format, class_name, name, message);
         if (parent_pointer) {
             return parent_pointer->make_message(local_message);
         }
