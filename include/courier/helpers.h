@@ -43,7 +43,9 @@ class Sender {
     std::shared_ptr<Courier> courier;
     Sender* parent_pointer {nullptr};
     std::string class_name;
-    std::string message_format {"{} '{}': {}"};
+    // if message_format is intended to be overridden in a subclass, remove constexpr and wrap it
+    // with fmt::runtime() when it's used inside fmt::format
+    static constexpr std::string_view message_format {"{} '{}': {}"};
     [[nodiscard]] std::string make_message(const std::string& message) const // NOLINT
     {
         std::string local_message = fmt::format(message_format, class_name, name, message);
