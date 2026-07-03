@@ -43,10 +43,10 @@ class Sender {
     std::shared_ptr<Courier> courier;
     Sender* parent_pointer {nullptr};
     std::string class_name;
-    std::string message_format {"{} '{}': {}"};
+    std::string message_format{"{} '{}': {}"};
     [[nodiscard]] std::string make_message(const std::string& message) const // NOLINT
     {
-        std::string local_message = fmt::format(message_format, class_name, name, message);
+        std::string local_message = fmt::format(fmt::runtime(message_format), class_name, name, message);
         if (parent_pointer) {
             return parent_pointer->make_message(local_message);
         }
